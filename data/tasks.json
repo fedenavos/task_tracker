@@ -1,0 +1,32 @@
+[
+  {
+    "name": "Interview with HR",
+    "description": "Virtual interview with the HR representative to learn about the job profile and the company",
+    "state": "Completed",
+    "estimate": 1
+  },
+  {
+    "name": "Interview with the Project Manager",
+    "description": "Virtual interview with the project manager to provide more details about the project and the activities to be carried out",
+    "state": "Completed",
+    "estimate": 2
+  },
+  {
+    "name": "Completion of Technical Challenge",
+    "description": "Completion of a technical challenge to demonstrate software development capability",
+    "state": "In Progress",
+    "estimate": 5
+  },
+  {
+    "name": "Interview with the Development Team",
+    "description": "Virtual interview with the development team to understand the development process and validate the resolution of the technical challenge",
+    "state": "Planned",
+    "estimate": 2
+  },
+  {
+    "name": "Final Interview with the Client",
+    "description": "Final interview with the client to conclude the evaluation process",
+    "state": "Planned",
+    "estimate": 4
+  }
+]

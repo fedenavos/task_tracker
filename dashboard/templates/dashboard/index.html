@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Task Tracker</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'dashboard/styles.css' %}">
+</head>
+
+<body>
+    <div class="container">
+
+        <h1>Dashboard</h1>
+        <form class="new-task-form" action="/api/tasks/" method="post" onsubmit="event.preventDefault();">
+            <label>
+                Name:
+                <input type="text" name="name">
+            </label>
+            <label>
+                Description:
+                <input type="text" name="description">
+            </label>
+            <label>
+                Estimate (in days):
+                <input type="number" name="estimate" min="1" max="30" width="10">
+            </label>
+            <button class="btn-submit" type="submit">Add Task</button>
+        </form>
+    </div>
+
+    <div class="task-column" id="planned">
+        <div class="column-header">
+            Planned
+            <div class="total-estimate">Total days: {{ total_planned_days }}</div>
+        </div>
+        {% for task in planned_tasks %}
+        <div class="task-card" draggable="true" id="{{ task.id }}">
+            <div class="task-card-header">
+                <strong>{{ task.name }}</strong>
+                <button class="btn-delete" type="button" onclick="deleteTask('{{task.id}}')">X</button>
+            </div>
+            <div class="task-card-body">
+                {{ task.description }} ({{ task.estimate }} days)
+            </div>
+        </div>
+        {% empty %}
+        <div>No planned tasks</div>
+        {% endfor %}
+    </div>
+    <div class="task-column" id="in-progress">
+        <div class="column-header">
+            In Progress
+            <div class="total-estimate">Total days: {{ total_in_progress_days }}</div>
+        </div>
+        {% for task in in_progress_tasks %}
+        <div class="task-card" draggable="true" id="{{ task.id }}">
+            <div class="task-card-header">
+                <strong>{{ task.name }}</strong>
+                <button class="btn-delete" type="button" onclick="deleteTask('{{task.id}}')">X</button>
+            </div>
+            <div class="task-card-body">
+                {{ task.description }} ({{ task.estimate }} days)
+            </div>
+        </div>
+        {% empty %}
+        <div>No tasks in progress</div>
+        {% endfor %}
+    </div>
+    <div class="task-column" id="completed">
+        <div class="column-header">
+            Completed
+            <div class="total-estimate">Total days: {{ total_completed_days }}</div>
+        </div>
+        {% for task in completed_tasks %}
+        <div class="task-card" draggable="true" id="{{ task.id }}">
+            <div class="task-card-header">
+                <strong>{{ task.name }}</strong>
+                <button class="btn-delete" type="button" onclick="deleteTask('{{task.id}}')">X</button>
+            </div>
+            <div class="task-card-body">
+                {{ task.description }} ({{ task.estimate }} days)
+            </div>
+        </div>
+        {% empty %}
+        <div>No completed tasks</div>
+        {% endfor %}
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const taskCards = document.querySelectorAll('.task-card');
+            taskCards.forEach(card => {
+                card.addEventListener('dragstart', handleDragStart);
+            });
+
+            // Definir el comportamiento para las columnas de tareas
+            const taskColumns = document.querySelectorAll('.task-column');
+            taskColumns.forEach(column => {
+                column.addEventListener('dragover', handleDragOver);
+                column.addEventListener('drop', handleDrop);
+            });
+        });
+
+        function handleDragStart(e) {
+            e.dataTransfer.setData('text/plain', e.target.id);
+        }
+
+        function handleDragOver(e) {
+            if (e.target.classList.contains('task-column')) {
+                e.preventDefault();
+            }
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            const taskId = e.dataTransfer.getData('text/plain');
+            const card = document.getElementById(taskId);
+            e.target.appendChild(card);
+
+            updateTaskState(taskId, e.target.id);
+        }
+
+        const form = document.querySelector('.new-task-form');
+
+        form.addEventListener('submit', (event) => {
+            fetch('/api/tasks/', {
+                method: 'POST',
+                body: new FormData(form)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    window.location.reload();
+                });
+        });
+
+        function updateTaskState(taskId, newState) {
+            const stateMapping = {
+                'planned': 'Planned',
+                'in-progress': 'In Progress',
+                'completed': 'Completed'
+            };
+
+            url = "/api/tasks/" + taskId + "/";
+            fetch(url, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    id: taskId,
+                    state: stateMapping[newState]
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+                    location.reload();
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
+
+        function deleteTask(taskId) {
+            url = "/api/tasks/" + taskId + "/";
+            fetch(url, {
+                method: 'DELETE'
+            })
+                .then(() => {
+                    console.log('Success: task deleted');
+                    location.reload();
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
+
+    </script>
+</body>
+
+</html>
