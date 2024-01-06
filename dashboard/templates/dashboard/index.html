@@ -38,7 +38,7 @@
         <div class="task-card" draggable="true" id="{{ task.id }}">
             <div class="task-card-header">
                 <strong>{{ task.name }}</strong>
-                <button class="btn-delete" type="button" onclick="deleteTask('{{task.id}}')">X</button>
+                <button class="btn-delete" type="button" data-task-id="{{ task.id }}">X</button>
             </div>
             <div class="task-card-body">
                 {{ task.description }} ({{ task.estimate }} days)
@@ -57,7 +57,7 @@
         <div class="task-card" draggable="true" id="{{ task.id }}">
             <div class="task-card-header">
                 <strong>{{ task.name }}</strong>
-                <button class="btn-delete" type="button" onclick="deleteTask('{{task.id}}')">X</button>
+                <button class="btn-delete" type="button" data-task-id="{{ task.id }}">X</button>
             </div>
             <div class="task-card-body">
                 {{ task.description }} ({{ task.estimate }} days)
@@ -76,7 +76,7 @@
         <div class="task-card" draggable="true" id="{{ task.id }}">
             <div class="task-card-header">
                 <strong>{{ task.name }}</strong>
-                <button class="btn-delete" type="button" onclick="deleteTask('{{task.id}}')">X</button>
+                <button class="btn-delete" type="button" data-task-id="{{ task.id }}">X</button>
             </div>
             <div class="task-card-body">
                 {{ task.description }} ({{ task.estimate }} days)

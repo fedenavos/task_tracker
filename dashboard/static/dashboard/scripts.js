@@ -26,7 +26,7 @@ function handleDrop(e) {
   e.preventDefault();
   const taskId = e.dataTransfer.getData('text/plain');
   const card = document.getElementById(taskId);
-  oldState = card.parentNode.id;
+  let oldState = card.parentNode.id;
   e.target.appendChild(card);
 
   updateTaskState(taskId, e.target.id, oldState);
@@ -43,6 +43,13 @@ form.addEventListener('submit', (event) => {
     .then(data => {
       window.location.reload();
     });
+});
+
+document.querySelectorAll('.btn-delete').forEach(button => {
+  button.addEventListener('click', function() {
+      const taskId = this.getAttribute('data-task-id');
+      deleteTask(taskId);
+  });
 });
 
 const stateMapping = {
@@ -81,6 +88,7 @@ function updateTaskState(taskId, newState, oldState) {
     })
     .catch((error) => {
       console.error('Error:', error);
+      displayErrorMessage('Something went wrong. Please try again.');
     });
 }
 
@@ -98,6 +106,7 @@ function deleteTask(taskId) {
     })
     .catch((error) => {
       console.error('Error:', error);
+      displayErrorMessage('Something went wrong. Please try again.');
     });
 }
 
@@ -113,5 +122,18 @@ function getNewTotalEstimateAndRender(state) {
     })
     .catch((error) => {
       console.error('Error:', error);
+      displayErrorMessage('Something went wrong. Please try again.');
     });
+}
+
+function displayErrorMessage(message) {
+  const errorDiv = document.createElement('div');
+  errorDiv.className = 'error-message';
+  errorDiv.textContent = message;
+
+  document.body.appendChild(errorDiv);
+
+  setTimeout(() => {
+      errorDiv.remove();
+  }, 5000);
 }
