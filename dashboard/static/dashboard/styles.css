@@ -61,6 +61,10 @@ button:hover {
   max-width: 100%;
 }
 
+.new-task-form * {
+  margin-left: 1.1em;
+}
+
 /* Inputs redondeados */
 input, 
 textarea,
