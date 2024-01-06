@@ -14,7 +14,8 @@ class TaskSerializer(serializers.ModelSerializer):
         return value
     
     def validate_state(self, value):
-        if value not in Task.STATE_CHOICES:
+        valid_states = [choice[0] for choice in Task.STATE_CHOICES]
+        if value not in valid_states:
             raise serializers.ValidationError("The state is not valid")
         return value
     
