@@ -134,6 +134,18 @@
                 });
         });
 
+        function moveTaskToNewState(taskId, newState) {
+            // Encuentra la tarea en el DOM
+            const taskElement = document.getElementById(`${taskId}`);
+
+            // Elimina la tarea de su lista actual
+            taskElement.parentNode.removeChild(taskElement);
+
+            // Agrega la tarea a su nueva lista
+            const newStateList = document.getElementById(newState);
+            newStateList.appendChild(taskElement);
+        }
+
         function updateTaskState(taskId, newState) {
             const stateMapping = {
                 'planned': 'Planned',
@@ -155,7 +167,7 @@
                 .then(response => response.json())
                 .then(data => {
                     console.log('Success:', data);
-                    location.reload();
+                    moveTaskToNewState(taskId, newState);
                 })
                 .catch((error) => {
                     console.error('Error:', error);
@@ -169,7 +181,8 @@
             })
                 .then(() => {
                     console.log('Success: task deleted');
-                    location.reload();
+                    const taskElement = document.getElementById(`${taskId}`);
+                    taskElement.parentNode.removeChild(taskElement);
                 })
                 .catch((error) => {
                     console.error('Error:', error);
